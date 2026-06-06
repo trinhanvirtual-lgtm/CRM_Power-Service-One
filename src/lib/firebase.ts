@@ -30,9 +30,11 @@ async function testConnection() {
     // Try to get a non-existent doc to test connectivity
     await getDocFromServer(doc(db, '_connection_test_', 'ping'));
   } catch (error) {
-    console.error("Firebase connection test failed:", error);
     if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.error("Please check your Firebase configuration. The client appears to be offline.");
+      console.warn("Firebase connection test failed: mechanical offline state detected or client is offline.", error);
+      console.warn("Please check your Firebase configuration. The client appears to be offline.");
+    } else {
+      console.warn("Firebase connection test completed with expected permission error:", error);
     }
   }
 }

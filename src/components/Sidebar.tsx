@@ -1,6 +1,7 @@
 import { Building2, LayoutDashboard, Ticket as TicketIcon, Users, FileText, Megaphone, Target, Database, Settings, BrainCircuit } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { NavItem } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 const navItems: NavItem[] = [
   { name: 'Bảng điều khiển', icon: 'LayoutDashboard', id: 'dashboard' },
@@ -21,6 +22,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ currentTab, setCurrentTab }: SidebarProps) {
+  const { user } = useAuth();
+
   return (
     <div className="w-68 bg-white/30 backdrop-blur-2xl text-slate-800 flex flex-col h-full border-r border-white/50 shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
       <div className="h-16 flex items-center px-6 border-b border-white/50">
@@ -59,15 +62,23 @@ export function Sidebar({ currentTab, setCurrentTab }: SidebarProps) {
         </nav>
       </div>
       
-      <div className="p-4 border-t border-white/50">
-        <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/50 transition-all cursor-pointer border border-transparent hover:border-white/60">
-          <img src="https://i.pravatar.cc/150?u=admin" alt="Admin User" className="w-10 h-10 rounded-full ring-2 ring-white/80 shadow-sm" />
-          <div className="flex flex-col">
-            <span className="text-sm font-bold text-slate-900">Quản trị hệ thống</span>
-            <span className="text-xs text-slate-500 font-semibold">vn_admin@nexus.com</span>
+      {user && (
+        <div className="p-4 border-t border-white/50">
+          <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/50 transition-all cursor-pointer border border-transparent hover:border-white/60">
+            {user.photoURL ? (
+              <img src={user.photoURL} referrerPolicy="no-referrer" alt="User User" className="w-10 h-10 rounded-full ring-2 ring-white/80 shadow-sm" />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold ring-2 ring-white/80 shadow-sm text-sm">
+                {user.email?.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-bold text-slate-900 truncate">{user.displayName || user.email?.split('@')[0] || "Người dùng"}</span>
+              <span className="text-xs text-slate-500 font-semibold truncate">{user.email}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
